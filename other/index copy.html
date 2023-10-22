@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Карта с точками и кластеризацией</title>
+    <style>
+        /* Стиль для отображения карты на странице */
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .main {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 500px;
+            background-color: black;
+        }
+
+        .nav {
+            position: absolute;
+            top: 80px;
+            width: auto;
+            left: 410px;
+            z-index: 999;
+        }
+
+        .cat {
+            display: flex;
+            gap: 10px;
+        }
+
+        .cat-item {
+            background-color: white;
+            padding: 0px 30px;
+            border-radius: 100px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: black;
+            font-weight: 500;
+            font-size: 18px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="nav">
+        <div class="cat">
+            <div class="cat-item" id="all">
+
+                <p>
+                    all
+                </p>
+            </div>
+            <div class="cat-item" id="farm">
+
+                <p>
+                    farm
+                </p>
+            </div>
+            <div class="cat-item" id="ehoss">
+
+                <p>
+                    ehoss
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="sidebar"></div>
+        <div id="map"></div>
+    </div>
+
+
+    <script>
+        // Ваш ключ API Google Maps
+        const apiKey = "AIzaSyD0OYZfnj8uXou0tfCNNyxxkuLpX9MABDQ";
+
+        // Массив с данными точек
+        const points = [
+                {
+                    "rawdata_guid": "3d642720-45a8-11ee-98df-000c29627401",
+                    "rawdata_code": "am-sonnenhofat",
+                    "rawdata_link": "am-sonnenhof.at",
+                    "rawdata_latitude": 47.07146068591832,
+                    "rawdata_longitude": 15.54857703342423,
+                    "category_guid": "abcc76b0-4d5f-11ed-98da-000c29627401",
+                    "category_id": "002",
+                    "category_description": "Equine: Farm",
+                    "country_description": "Austria",
+                    "country_guid": "dc9cebb9-e7c4-11ec-98d7-000c29627401",
+                    "areacity_guid": "9411c6b5-4437-11ee-98df-000c29627401",
+                    "areacity_description": "Graz",
+                    "areacity_latitude": 47.07072583603133,
+                    "areacity_longitude": 15.44006847794197,
+                    "ehoss_present": false
+                },
+                {
+                    "rawdata_guid": "e58f9bd8-45c2-11ee-98df-000c29627401",
+                    "rawdata_code": "alpenrosebrandat",
+                    "rawdata_link": "alpenrosebrand.at",
+                    "rawdata_latitude": 47.09843168805738,
+                    "rawdata_longitude": 9.73502609116159,
+                    "category_guid": "abcc76b0-4d5f-11ed-98da-000c29627401",
+                    "category_id": "002",
+                    "category_description": "Equine: Farm",
+                    "country_description": "Austria",
+                    "country_guid": "dc9cebb9-e7c4-11ec-98d7-000c29627401",
+                    "areacity_guid": "3202f517-4441-11ee-98df-000c29627401",
+                    "areacity_description": "Bludenz",
+                    "areacity_latitude": 47.15671303567059,
+                    "areacity_longitude": 9.82116881205024,
+                    "ehoss_present": false
+                },
+                {
+                    "rawdata_guid": "56defd1a-45d1-11ee-98df-000c29627401",
+                    "rawdata_code": "magnaracinoat",
+                    "rawdata_link": "magnaracino.at",
+                    "rawdata_latitude": 47.98068989475175,
+                    "rawdata_longitude": 16.38527659277895,
+                    "category_guid": "abcc76b0-4d5f-11ed-98da-000c29627401",
+                    "category_id": "002",
+                    "category_description": "Equine: Farm",
+                    "country_description": "Austria",
+                    "country_guid": "dc9cebb9-e7c4-11ec-98d7-000c29627401",
+                    "areacity_guid": "a1ef621d-4434-11ee-98df-000c29627401",
+                    "areacity_description": "Vienna",
+                    "areacity_latitude": 48.20950404629586,
+                    "areacity_longitude": 16.37212874566252,
+                    "ehoss_present": true
+                },
+                {
+                    "rawdata_guid": "aa9b3ed0-65d0-11ee-98df-000c29627401",
+                    "rawdata_code": "evm-bioenergieat",
+                    "rawdata_link": "evm-bioenergie.at",
+                    "rawdata_latitude": 48.04748207341669,
+                    "rawdata_longitude": 16.60808079376709,
+                    "category_guid": "a420f35e-65ce-11ee-98df-000c29627401",
+                    "category_id": "003",
+                    "category_description": "Production: Biogas",
+                    "country_description": "Austria",
+                    "country_guid": "dc9cebb9-e7c4-11ec-98d7-000c29627401",
+                    "areacity_guid": "a1ef621d-4434-11ee-98df-000c29627401",
+                    "areacity_description": "Vienna",
+                    "areacity_latitude": 48.20950404629586,
+                    "areacity_longitude": 16.37212874566252,
+                    "ehoss_present": false
+                },
+                {
+                    "rawdata_guid": "9dcb8211-65d3-11ee-98df-000c29627401",
+                    "rawdata_code": "ekinfarmcom",
+                    "rawdata_link": "ekinfarm.com",
+                    "rawdata_latitude": 48.12828167571078,
+                    "rawdata_longitude": 15.8860582318953,
+                    "category_guid": "d8ad09e8-65d3-11ee-98df-000c29627401",
+                    "category_id": "004",
+                    "category_description": "Production: Cattle farm",
+                    "country_description": "Austria",
+                    "country_guid": "dc9cebb9-e7c4-11ec-98d7-000c29627401",
+                    "areacity_guid": "a1ef621d-4434-11ee-98df-000c29627401",
+                    "areacity_description": "Vienna",
+                    "areacity_latitude": 48.20950404629586,
+                    "areacity_longitude": 16.37212874566252,
+                    "ehoss_present": false
+                },
+                {
+                    "rawdata_guid": "8fdcf3ba-65d4-11ee-98df-000c29627401",
+                    "rawdata_code": "ehosscom",
+                    "rawdata_link": "ehoss.com",
+                    "rawdata_latitude": 48.16601200857865,
+                    "rawdata_longitude": 17.15407473591836,
+                    "category_guid": "e622df28-65d3-11ee-98df-000c29627401",
+                    "category_id": "001",
+                    "category_description": "Ehoss",
+                    "country_description": "Slovakia",
+                    "country_guid": "b6e75ed0-aed4-11ec-98d7-000c29627401",
+                    "areacity_guid": "b81209e4-aee6-11ec-98d7-000c29627401",
+                    "areacity_description": "Bratislava",
+                    "areacity_latitude": 48.14354318058901,
+                    "areacity_longitude": 17.10793705942207,
+                    "ehoss_present": true
+                }
+            ]
+
+        function initMap() {
+
+            // Создаем функцию для фильтрации маркеров по категории
+            function filterMarkersByCategory(categoryGuid) {
+                markers.forEach(marker => {
+                    // Проверяем, соответствует ли маркер выбранной категории
+                    if (marker.point.category_guid === categoryGuid || categoryGuid === "all") {
+                        marker.setMap(map); // Показываем маркер
+                    } else {
+                        marker.setMap(null); // Скрываем маркер
+                    }
+                });
+            }
+
+            // Создаем объект с настройками стилей карты
+            const mapStyles = [
+                {
+                    featureType: "water",
+                    elementType: "geometry",
+                    stylers: [
+                        { color: "#ffffff" }, // Цвет воды
+                    ],
+                },
+                {
+                    featureType: "landscape",
+                    elementType: "geometry",
+                    stylers: [
+                        { color: "#333333" }, // Цвет ландшафта
+                    ],
+                },
+                {
+                    featureType: "road",
+                    elementType: "geometry",
+                    stylers: [
+                        { color: "#444444" }, // Цвет дорог
+                    ],
+                },
+                // Добавьте другие настройки стилей, если необходимо
+            ];
+
+
+            const map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 47.07146068591832, lng: 12.54857703342423 },
+                zoom: 8,
+                styles: mapStyles,
+            });
+
+            // https://ehoss.com/mailicons/farm.svg
+
+            const markers = points.map(point => {
+                let iconUrl = '';
+                if (point.category_guid === "abcc76b0-4d5f-11ed-98da-000c29627401") {
+                    if (point.ehoss_present === true) {
+                        iconUrl = 'https://ehoss.com/mailicons/cr002.svg';
+                    } else {
+                        iconUrl = 'https://ehoss.com/mailicons/cg002.svg';
+                    }
+                } else if (point.category_guid === "e622df28-65d3-11ee-98df-000c29627401") {
+                    iconUrl = 'https://ehoss.com/mailicons/ehoss.svg';
+                } else if (point.category_guid === "a420f35e-65ce-11ee-98df-000c29627401") {
+                    iconUrl = 'https://ehoss.com/mailicons/biogas.svg';
+                }  else if (point.category_guid === "d8ad09e8-65d3-11ee-98df-000c29627401") {
+                    iconUrl = 'https://ehoss.com/mailicons/farm.svg';
+                }  else{
+                    // other
+                }
+
+                return new google.maps.Marker({
+                    position: { lat: point.rawdata_latitude, lng: point.rawdata_longitude },
+                    map: map,
+                    icon: {
+                        url: iconUrl,
+                        scaledSize: new google.maps.Size(40, 40),
+                    },
+                    category: point.category_guid,
+                    name: point.rawdata_code,
+                    url: point.rawdata_link,
+                });
+            });
+
+            // Создаем функцию для фильтрации маркеров по категории
+            function filterMarkersByCategory(categoryGuid) {
+                
+                markers.forEach(marker => {
+                    // Получаем категорию маркера из его свойства category
+                    const markerCategory = marker.category;
+
+                    // Проверяем, соответствует ли категория маркера выбранной категории
+                    if (markerCategory === categoryGuid || categoryGuid === "all") {
+                        marker.setMap(map); // Показываем маркер
+                    } else {
+                        marker.setMap(null); // Скрываем маркер
+                    }
+                });
+
+}
+
+
+
+
+
+
+
+            function setupListeners() {
+
+                document.getElementById("farm").addEventListener("click", () => {
+                    filterMarkersByCategory("abcc76b0-4d5f-11ed-98da-000c29627401");
+                });
+
+                document.getElementById("ehoss").addEventListener("click", () => {
+                    filterMarkersByCategory("e622df28-65d3-11ee-98df-000c29627401");
+                });
+
+                document.getElementById("all").addEventListener("click", () => {
+                    filterMarkersByCategory("all");
+                });
+            }
+            setupListeners();
+
+
+            const uniquePoints = {};
+
+            points.forEach(point => {
+                const key = `${point.areacity_latitude},${point.areacity_longitude}`;
+                if (!uniquePoints[key]) {
+                    uniquePoints[key] = {
+                        point: point,
+                        count: 1
+                    };
+                } else {
+                    uniquePoints[key].count++;
+                }
+            });
+
+            const markersCL = Object.values(uniquePoints).map(uniquePoint => {
+                const point = uniquePoint.point;
+                const count = uniquePoint.count;
+                const marker = new google.maps.Marker({
+                    position: { lat: point.areacity_latitude, lng: point.areacity_longitude },
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 15,
+                        fillColor: "black",
+                        fillOpacity: 1,
+                        strokeColor: "red",
+                        strokeWeight: 2,  
+                    },
+                    label: {
+                        text: `${count}`,
+                        color: "white",
+                        fontSize: "16px"
+                    },
+                });
+
+                const infowindow = new google.maps.InfoWindow({
+                    content: `Objects: ${count}`
+                });
+
+                marker.addListener("click", () => {
+                    infowindow.open(map, marker);
+                });
+
+                return marker;
+            });
+
+            console.log(markersCL);
+
+            markersCL.forEach(marker => {
+                marker.setVisible(false);
+            });
+
+            map.addListener('zoom_changed', function () {
+                const currentZoom = map.getZoom();
+                if (currentZoom < 8) {
+
+                    markers.forEach(marker => {
+                        marker.setVisible(false);
+                    });
+
+                    markersCL.forEach(marker => {
+                        marker.setVisible(true);
+                    });
+                    console.log(uniquePoints);
+                    
+                       
+                } else {
+
+                    markers.forEach(marker => {
+                        marker.setVisible(true);
+                    });
+
+                    markersCL.forEach(marker => {
+                        marker.setVisible(false);
+                    });
+                }
+            });
+        }
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0OYZfnj8uXou0tfCNNyxxkuLpX9MABDQ&callback=initMap"
+        async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gmaps-marker-clusterer/1.2.2/markerclusterer.min.js"
+        integrity="sha512-BUtiV930SCsAg1Nh/sx5j+eo/irVRdKPot3NPs53D/DrVnQWM1YUi6CWdOZ/7MjddKHS53t7nR/VZGWqXUIaBg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+
+</html>

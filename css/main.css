@@ -1,0 +1,156 @@
+    /* Стиль для отображения карты на странице */
+    #map {
+        height: 100vh;
+        width: 100%;
+      }
+
+      html {
+        overflow: hidden;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Raleway', sans-serif;
+        overflow: hidden;
+      }
+
+      .main {
+        display: flex;
+        /* position: relative; */
+        z-index: -1;
+      }
+      /* 
+        .sidebar {
+            width: 500px;
+            background-color: black;
+        } */
+
+      .nav {
+        position: absolute;
+        top: 80px;
+        width: auhref;
+        /* left: 10px; */
+        left: 90px;
+        z-index: 33;
+      }
+
+      .cat {
+        display: flex;
+        gap: 10px;
+      }
+
+      @media (max-width: 830px) {
+        .cat {
+          width: 100vw;
+          scroll-behavior: smooth;
+          overflow: auhref;
+        }
+
+        .cat-item p{
+          font-size: 12px;
+        }
+      }
+      .cat-item {
+        background-color: white;
+        padding: 0px 20px;
+        border-radius: 14px;
+        color: black;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+
+        white-space: nowrap;
+      }
+
+      .cat-item:nth-child(1) {
+          margin-left: 10px;
+      }
+
+      .cat-item:last-child {
+          margin-right: 30px;
+      }
+
+      .cat-item svg{
+          height: 20px;
+          width: 20px;
+       
+      }
+
+
+      .map-style {
+          position: absolute;
+          z-index: 2;
+          right: 10px; 
+          bottom: 10px;
+
+      }
+
+      .map-style-item {
+        background-color: white;
+        border-radius: 100px;
+        padding: 10px;
+      }
+
+      .map-style-item img {
+        width: 30px;
+      }
+
+      .map-style-item svg {
+        width: 30px;
+      }
+
+      #all.all {
+        background-color: red;
+        color: white;
+      }
+
+      .cat-item.abcc76b0-4d5f-11ed-98da-000c29627401 {
+        background-color: red;
+        color: white;
+      }
+
+      .cat-item.abcc76b0-4d5f-11ed-98da-000c29627401 svg path{
+        /* stroke: white; */
+        fill: white;
+      }
+
+
+
+      .cat-item.a420f35e-65ce-11ee-98df-000c29627401 {
+        background-color: red;
+        color: white;
+      }
+
+      .cat-item.a420f35e-65ce-11ee-98df-000c29627401 svg path{
+        stroke: white;
+      }
+
+
+
+
+      .cat-item.d8ad09e8-65d3-11ee-98df-000c29627401 {
+        background-color: red;
+        color: white;
+      }
+
+      .cat-item.d8ad09e8-65d3-11ee-98df-000c29627401 svg path{
+        stroke: white;
+      }
+
+
+      .cat-item.e622df28-65d3-11ee-98df-000c29627401 {
+        background-color: red;
+        color: white;
+      }
+
+      .cat-item.e622df28-65d3-11ee-98df-000c29627401 svg path{
+        fill: white;
+      }
+     .infowin {
+      max-width: 240px;
+     }
