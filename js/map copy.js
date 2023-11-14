@@ -1,21 +1,13 @@
 // Ваш ключ API Google Maps
 const apiKey = "AIzaSyD0OYZfnj8uXou0tfCNNyxxkuLpX9MABDQ";
-let points;
+let points = "";
 let stats = "";
 
-
-
-
-fetch("https://form.ehoss.com/get-data/rawdata") // Загружаем файл emap.json с помощью fetch
+fetch("emap.json") // Загружаем файл emap.json с помощью fetch
   .then((response) => response.json()) // Преобразуем ответ в формат JSON
   .then((data) => {
     points = data;
-
-    // setTimeout(() => initMap(), 1000);
-    // setTimeout(() => GetCountryFilter(points), 1000);
     setTimeout(() => initMap(), 1000);
-    // Генерируем статистику
-    // generateStats(points);
   })
   .catch((error) => console.error("Ошибка загрузки файла:", error));
 
@@ -128,57 +120,39 @@ function initMap() {
    });
    
 
-  const markers = points
-  .filter((point) => point.ispublicdata === 1) 
-  .map((point) => {
+  const markers = points.map((point) => {
     // Создайте объект, соответствующий `category_guid` и `iconUrl`
     const iconUrls = {
       "abcc76b0-4d5f-11ed-98da-000c29627401": {
-        1: "https://dainty-pasca-269977.netlify.app/icons/cr002.svg",
-        0: "https://dainty-pasca-269977.netlify.app/icons/cg002.svg",
+        true: "https://dainty-pasca-269977.netlify.app/icons/cr002.svg",
+        false: "https://dainty-pasca-269977.netlify.app/icons/cg002.svg",
       },
       "e622df28-65d3-11ee-98df-000c29627401": {
-        1: "https://dainty-pasca-269977.netlify.app/icons/cr001.svg",
-        0: "https://dainty-pasca-269977.netlify.app/icons/cg001.svg",
+        true: "https://dainty-pasca-269977.netlify.app/icons/cr001.svg",
+        false: "https://dainty-pasca-269977.netlify.app/icons/cg001.svg",
       },
       "d8ad09e8-65d3-11ee-98df-000c29627401": {
-        1: "https://dainty-pasca-269977.netlify.app/icons/cr004.svg",
-        0: "https://dainty-pasca-269977.netlify.app/icons/cg004.svg",
+        true: "https://dainty-pasca-269977.netlify.app/icons/cr004.svg",
+        false: "https://dainty-pasca-269977.netlify.app/icons/cg004.svg",
       },
       "a420f35e-65ce-11ee-98df-000c29627401": {
-        1: "https://dainty-pasca-269977.netlify.app/icons/cr003.svg",
-        0: "https://dainty-pasca-269977.netlify.app/icons/cg003.svg",
+        true: "https://dainty-pasca-269977.netlify.app/icons/cr003.svg",
+        false: "https://dainty-pasca-269977.netlify.app/icons/cg003.svg",
       },
     };
 
-    document.querySelector('.pixel').addEventListener('click',() => {
-      markers.forEach((marker) => {
-          marker.setVisible(false);
-      });
-
-      document.querySelector
-      
-      const radioButtons = document.getElementsByName("catOption");
-      radioButtons[0].checked = false;
-      radioButtons[1].checked = false;
-      radioButtons[2].checked = false;
-      // radioButtons[3].checked = false;
-     
-      document.querySelector('#openCat .cat-drop').classList.remove('active')
-      document.querySelector('#openCat').classList.remove('active')
-      hideClusters()
-    })
+  
 
     // Используйте объект для получения iconUrl
     let iconUrl = "";
     if (iconUrls[point.category_guid]) {
       iconUrl =
-        iconUrls[point.category_guid][point.isehosspresent ? 1 : 0];
+        iconUrls[point.category_guid][point.ehoss_present ? true : false];
     }
     const marker = new google.maps.Marker({
       position: {
-        lat: point.latitude,
-        lng: point.longitude,
+        lat: point.rawdata_latitude,
+        lng: point.rawdata_longitude,
       },
       map: map,
       icon: {
@@ -186,7 +160,7 @@ function initMap() {
         scaledSize: new google.maps.Size(40, 40),
       },
       category: point.category_guid,
-      country: point.country_guid,
+      country: point.country_description,
       name: point.rawdata_code,
       url: point.rawdata_a,
     });
@@ -195,52 +169,46 @@ function initMap() {
     // Создаем информационное окно
     const infowindow = new google.maps.InfoWindow({
       content: `<div class='infowin'>
-       <strong>${point.description}</strong><br>
+       <strong>${point.category_mapdescription}</strong><br>
          <span></span>
-         <a style="color: red" href="https://${point.description}" target="_blank">${point.description}</a>
+         <a style="color: red" href="https://${point.rawdata_link}" target="_blank">${point.rawdata_link}</a>
          <br><br>
-           Address: ${point.address}
+           Country: ${point.country_description} <br>
+           Area: ${point.areacity_description} <br>
+           Address: ${point.rawdata_address}
          </div>`,
-         
     });
-
-        // Создаем информационное окно
-        // const infowindow = new google.maps.InfoWindow({
-        //   content: `<div class='infowin'>
-        //    <strong>${point.category_mapdescription}</strong><br>
-        //      <span></span>
-        //      <a style="color: red" href="https://${point.description}" target="_blank">${point.description}</a>
-        //      <br><br>
-        //        Country: ${point.country_description} <br>
-        //        Area: ${point.areacity_description} <br>
-        //        Address: ${point.address}
-        //      </div>`,
-        // });
     let currentInfoWindow = null;
     
     // Добавляем обработчик события click для маркера
-   // Добавляем обработчик события mouseover для маркера
-    marker.addListener('click', () => {
-      // Открываем информационное окно при наведении на маркер
+    marker.addListener("click", () => {
+      // Открываем информационное окно при клике на маркер
       infowindow.open(map, marker);
     });
-
-    // Добавляем обработчик события mouseout для маркера
-    // marker.addListener('mouseout', () => {
-    //   // Закрываем информационное окно при уходе указателя с маркера
-    //   infowindow.close();
-    // });
-
-    // Изменение обработчика события на closeclick
-    google.maps.event.addListener(infowindow, 'closeclick', function () {
-      infowindow.close();
-  });
 
     // Добавляем обработчик события click на карту
     google.maps.event.addListener(map, "click", function () {
       // Закрываем информационное окно при клике на карту
       infowindow.close();
     });
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Добавляем обработчик события zoom_changed
     google.maps.event.addListener(map, "zoom_changed", function () {
@@ -269,41 +237,25 @@ function initMap() {
   let markerCluster = new MarkerClusterer(map, filteredMarkers, clusterOptions); // Создаем новые кластеры с отфильтрованными маркерами
 
 
-
-
-
-
-
-
-
-
-
-
-  
-
   function filterMarkersByCategory(categoryGuid) {
-
     markerCluster.clearMarkers(); // Очищаем существующие кластеры
     let filteredMarkers = [];
     // Создаем новый массив для отфильтрованных маркеров
-  
+    const radioButtons = document.getElementsByName("countryOption");
 
-    const countries = document.querySelectorAll('.country-item');
     let selectedCountry;
-
-    countries.forEach(country => {
-      if (country.classList.contains('active')) {
-        selectedCountry = country.dataset.guid;
-      }
+  
+    radioButtons.forEach(radio => {
+        if (radio.checked) {
+            selectedCountry = radio.value;
+        }
     });
-
-    console.log(selectedCountry);
 
     markers.forEach((marker) => {
       const markerCategory = marker.category;
       if (
         (markerCategory === categoryGuid || categoryGuid === "all") &&
-        (selectedCountry === undefined || marker.country === selectedCountry)
+        (selectedCountry === "default" || marker.country === selectedCountry)
       ) {
       
         filteredMarkers.push(marker); 
@@ -321,213 +273,87 @@ function initMap() {
     markerCluster = new MarkerClusterer(map, filteredMarkers, clusterOptions); // Создаем новые кластеры с отфильтрованными маркерами
   }
 
-  function hideClusters() {
-    markerCluster.clearMarkers();
-
-    console.log(12414124);
-  }
-
-  filterMarkersByCategory('all')
-
-
-
-
-
 
 
   function filterMapByCountry(selectedCountry, markers) {
 
-    hideHeatMap()
-    const catItem = document.querySelector('#categoriesDrop');
-    const catItems = catItem.querySelectorAll('.cat-item')
+  
+      const catItems = document.querySelectorAll('.cat-item');
+      let secondClass;
+      catItems.forEach((item) => {
+        // Получаем список классов элемента
+        const classes = item.classList;
+        // Проверяем, есть ли у элемента два класса
+        if (classes.length === 2) {
+          // Второй класс это classes[1] (индекс 1)
+          secondClass = classes[1];
+          console.log(secondClass);
+        }
+      });
+   
+    
 
-    let secondClass;
-    catItems.forEach((item) => {
-      // Получаем список классов элемента
-      const classes = item.classList;
-      // Проверяем, есть ли у элемента два класса
-      if (classes.length === 2) {
-        // Второй класс это classes[1] (индекс 1)
-        secondClass = classes[1];
-        console.log(secondClass);
+
+    document.querySelectorAll('.cat-item')
+    markerCluster.clearMarkers(); 
+    let filteredMarkers = [];
+    
+    console.log(markers);
+    markers.forEach((marker) => {
+
+      const markerCategory = marker.category;
+
+      if (
+        (markerCategory === secondClass || secondClass === "all") &&
+        (selectedCountry === "default" || marker.country === selectedCountry)
+        ) {
+
+          console.log(selectedCountry);
+        marker.setVisible(true);
+        filteredMarkers.push(marker); 
+      } else {
+        marker.setVisible(false);
       }
     });
- 
   
-    console.log(secondClass + 'тут');
-
-  // document.querySelectorAll('.cat-item')
-  markerCluster.clearMarkers(); 
-  let filteredMarkers = [];
-    console.log(selectedCountry);
-  markers.forEach((marker) => {
-    const markerCategory = marker.category;
-    if (
-      (markerCategory === secondClass || secondClass === undefined) &&
-      (selectedCountry === "default" || marker.country === selectedCountry)
-      ) {
-        console.log(selectedCountry);
-      marker.setVisible(true);
-      filteredMarkers.push(marker); 
-    } else {
-      marker.setVisible(false);
-    }
-  });
-
-  markerCluster = new MarkerClusterer(map, filteredMarkers, clusterOptions); // Создаем новые кластеры с отфильтрованными маркерами
-}
-
-
-let countriesData;
-
- async function fetchData() {
-   try {
-     const response = await fetch("https://form.ehoss.com/get-data/countries");
-     if (response.ok) {
-       const data = await response.json();
-       countriesData = data;
-       console.log(countriesData);
-       displayCountries(countriesData);
-     } else {
-       console.error("Ошибка загрузки файла:", response.status);
-     }
-   } catch (error) {
-     console.error("Ошибка загрузки файла:", error);
-   }
- }
- 
- fetchData();
-
-
-// Предполагается, что у вас есть контейнер с id "countriesContainer" на странице.
-// Получаем контейнер для стран
-const countriesContainer = document.getElementById("countriesContainer");
-
-function displayCountries(countries) {
-  if (!countriesContainer) {
-    console.error("Контейнер для стран не найден");
-    return;
+    markerCluster = new MarkerClusterer(map, filteredMarkers, clusterOptions); // Создаем новые кластеры с отфильтрованными маркерами
   }
 
-  countries.forEach(country => {
-    const countryElement = document.createElement("div");
-    countryElement.classList.add('country-item');
-    countryElement.dataset.guid = country.guid;
+  filterMarkersByCategory('all')
 
-    const circleElement = document.createElement("div");
-    circleElement.classList.add('circle');
-
-    const pElement = document.createElement("p");
-    pElement.textContent = country.description;
-
-    // Добавляем обработчик события на клик по стране
-    countryElement.addEventListener("click", () => {
-      // Удаляем класс 'active' у всех элементов стран
-      countriesContainer.querySelectorAll('.country-item').forEach(element => {
-        element.classList.remove('active');
-      });
-
-       // Устанавливаем название выбранной страны
-  const selectedCountryName = country.description;
-  document.querySelector('.countyName').textContent = selectedCountryName;
-
-        // Добавляем класс 'active' к выбранному элементу
-      countryElement.classList.add('active');
-
-      // Получаем guid выбранной страны
-      const selectedCountryGuid = countryElement.dataset.guid;
-      // Вызываем функцию filterMapByCountry с передачей guid
-      filterMapByCountry(selectedCountryGuid, markers);
-    });
-
-   
-    countryElement.appendChild(pElement);
-    countryElement.appendChild(circleElement);
-    countriesContainer.appendChild(countryElement);
-  });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  // filterMapByCountry('dc9cebb9-e7c4-11ec-98d7-000c29627401', markers)
 
 
 
 
 
   function setupListeners() {
+    // События на кликк all
     document.getElementById("all").addEventListener("click", (e) => {
       filterMarkersByCategory("all");
-      filterMapByCountry('default', markers)
-      document.querySelector('#openCount').classList.remove('active')
-      document.getElementById("all").click()
-
       e.currentTarget.classList.add("all");
-      hideHeatMap()
+    
+    
+
       const radioButtons = document.getElementsByName("catOption");
       radioButtons.forEach(e => {
         e.checked = false;
       })
       document.querySelector('.countyNameCat').innerHTML = `Category`
-     
-      document.querySelector('.countyName').textContent = `Country`
-      countriesContainer.querySelectorAll('.country-item').forEach(element => {
-        element.classList.remove('active');
-      });
-
-
-      markers.forEach((marker) => {
-
-   
-          marker.setMap(map); 
-          marker.setVisible(true);
-
-     
-
-      });
-
-      markerCluster.clearMarkers(); 
-
-      markerCluster = new MarkerClusterer(map, markers, clusterOptions); // Создаем новые кластеры с отфильтрованными маркерами
 
       
-     
-      // document.querySelector('#radio1').click()
-      // document.querySelector('#countrySelect').classList.remove('active');
+      document.querySelector('#radio1').click()
+      document.querySelector('#countrySelect').classList.remove('active');
       document.querySelector('#openCat .cat-drop').classList.remove('active')
       // const radioButtons2 = document.getElementsByName("countryOption");
+
+
+      // radioButtons2.forEach(e => {
+      //   e.checked = false;
+      // });
+    
+      // document.querySelector('.countyName').innerHTML = "Countries"
+
 
 
       document
@@ -548,7 +374,7 @@ function displayCountries(countries) {
       filterMarkersByCategory("abcc76b0-4d5f-11ed-98da-000c29627401");
       e.currentTarget.classList.add("abcc76b0-4d5f-11ed-98da-000c29627401");
      
-      hideHeatMap()
+
       const radioButtons = document.getElementsByName("catOption");
       radioButtons[0].checked = true;
       document.querySelector('.countyNameCat').innerHTML = `${radioButtons[0].value}`
@@ -571,7 +397,7 @@ function displayCountries(countries) {
       e.currentTarget.classList.add("a420f35e-65ce-11ee-98df-000c29627401");
 
 
-      hideHeatMap()
+
       const radioButtons = document.getElementsByName("catOption");
       radioButtons[1].checked = true;
       document.querySelector('.countyNameCat').innerHTML = `${radioButtons[1].value}`
@@ -593,7 +419,7 @@ function displayCountries(countries) {
       filterMarkersByCategory("d8ad09e8-65d3-11ee-98df-000c29627401");
       e.currentTarget.classList.add("d8ad09e8-65d3-11ee-98df-000c29627401");
 
-      hideHeatMap()
+
       const radioButtons = document.getElementsByName("catOption");
       radioButtons[2].checked = true;
       document.querySelector('.countyNameCat').innerHTML = `${radioButtons[2].value}`
@@ -610,32 +436,63 @@ function displayCountries(countries) {
         .classList.remove("e622df28-65d3-11ee-98df-000c29627401");
     });
     // События на клик ehoss
-    // document.getElementById("ehoss").addEventListener("click", (e) => {
-    //   filterMarkersByCategory("e622df28-65d3-11ee-98df-000c29627401");
-    //   e.currentTarget.classList.add("e622df28-65d3-11ee-98df-000c29627401");
+    document.getElementById("ehoss").addEventListener("click", (e) => {
+      filterMarkersByCategory("e622df28-65d3-11ee-98df-000c29627401");
+      e.currentTarget.classList.add("e622df28-65d3-11ee-98df-000c29627401");
 
 
-    //   hideHeatMap()
-    //   const radioButtons = document.getElementsByName("catOption");
-    //   radioButtons[3].checked = true;
-    //   document.querySelector('.countyNameCat').innerHTML = `${radioButtons[3].value}`
+
+      const radioButtons = document.getElementsByName("catOption");
+      radioButtons[3].checked = true;
+      document.querySelector('.countyNameCat').innerHTML = `${radioButtons[3].value}`
 
 
-    //   document.getElementById("all").classList.remove("all");
-    //   document
-    //     .getElementById("farm")
-    //     .classList.remove("abcc76b0-4d5f-11ed-98da-000c29627401");
-    //   document
-    //     .getElementById("biogas")
-    //     .classList.remove("a420f35e-65ce-11ee-98df-000c29627401");
-    //   document
-    //     .getElementById("cattle-farm")
-    //     .classList.remove("d8ad09e8-65d3-11ee-98df-000c29627401");
-    // });
+      document.getElementById("all").classList.remove("all");
+      document
+        .getElementById("farm")
+        .classList.remove("abcc76b0-4d5f-11ed-98da-000c29627401");
+      document
+        .getElementById("biogas")
+        .classList.remove("a420f35e-65ce-11ee-98df-000c29627401");
+      document
+        .getElementById("cattle-farm")
+        .classList.remove("d8ad09e8-65d3-11ee-98df-000c29627401");
+    });
   }
   setupListeners();
 
+  // const uniquePoints = {};
 
+  // points.forEach((point) => {
+  //   const key = `${point.areacity_latitude},${point.areacity_longitude}`;
+  //   if (!uniquePoints[key]) {
+  //     uniquePoints[key] = {
+  //       point: point,
+  //       category: point.category_guid,
+  //       country: point.country_description,
+  //       count: 1,
+  //     };
+  //   } else {
+  //     uniquePoints[key].count++;
+  //   }
+  // });
+
+
+  function handleSelectChange() {
+    const radioButtons = document.getElementsByName("countryOption");
+
+    let selectedCountry;
+
+    radioButtons.forEach(radio => {
+        if (radio.checked) {
+            selectedCountry = radio.value;
+        }
+    });
+
+    filterMapByCountry(selectedCountry, markers);
+    console.log(selectedCountry);
+    refreshSelectChange()
+}
 
 
 function refreshSelectChange() {
@@ -656,25 +513,58 @@ function refreshSelectChange() {
   document.querySelector('.countyName').innerHTML = `${selectedCountry}`
 }
 
+
+
+
+  document
+    .getElementById("countrySelect")
+    .addEventListener("change", handleSelectChange);
+
+
+
+  // markers.forEach((marker) => {
+  //   marker.setVisible(true);
+  // });
+
+
+
+
 }
 
 document.querySelector(".header__menu-btn").addEventListener("click", () => {
   document.querySelector(".header__navbar").classList.toggle("active");
 });
 
+
+// document.querySelector('#openCat').addEventListener('click', (e) => {
+//   document.querySelector('.cat-drop').classList.toggle('active');
+//   e.target.classList.toggle('active');
+// })
+
+// let drop = document.querySelector('.cat-drop');
+
+
+// drop.querySelectorAll('.cat-item').forEach((item) => {
+//   item.addEventListener('click', () => {
+//     document.querySelector('.cat-drop').classList.toggle('active');
+//     document.querySelector('#openCat').classList.toggle('active');
+//   })
+// })
+
+
 window.onload = () => {
+
+  
+ 
+  setTimeout(() => {
+    document.querySelector('#radio1').click()
+  }, 1000);
 
   setTimeout(() => {
     document.querySelector('.preloader__wrapper').classList.add('hidden');
-    // document.querySelector('#countrySelect').classList.remove('active');
-    // document.querySelector('#all').click();
-  }, 1200)
-
-  
-  setTimeout(() => {
+    document.querySelector('#countrySelect').classList.remove('active');
     document.querySelector('#all').click();
-  }, 1400)
-
+  }, 1200)
 
 }
 
@@ -686,20 +576,19 @@ dropCat.querySelectorAll('.cat-item').forEach((item) => {
   item.addEventListener('click', () => {
     document.querySelector('.cat-drop').classList.toggle('active');
     refreshSelectChangeCategory()
-    document.querySelector('#openCount').classList.remove('active')
   })
 })
 
 document.querySelector('#openCat').addEventListener('click', () => {
   document.querySelector('#openCat').classList.toggle('active')
-  document.querySelector('#openCount').classList.remove('active')
+  document.querySelector('#countrySelect').classList.remove('active')
 })
 
-// document.querySelector('#openCount').addEventListener('click', () => {
-//   document.querySelector('#countrySelect').classList.toggle('active')
-//   document.querySelector('#openCat').classList.remove('active')
-//   document.querySelector('#openCat .cat-drop').classList.remove('active')
-// })
+document.querySelector('#openCount').addEventListener('click', () => {
+  document.querySelector('#countrySelect').classList.toggle('active')
+  document.querySelector('#openCat').classList.remove('active')
+  document.querySelector('#openCat .cat-drop').classList.remove('active')
+})
 
 function refreshSelectChangeCategory() {
   const radioButtons = document.getElementsByName("catOption");
@@ -719,8 +608,7 @@ function refreshSelectChangeCategory() {
 document.querySelector('#map').addEventListener('click', () => {
   document.querySelector('#openCat .cat-drop').classList.remove('active')
   document.querySelector('#openCat').classList.remove('active')
-  document.querySelector('#openCount').classList.remove('active')
-  // document.querySelector('#countrySelect').classList.remove('active')
+  document.querySelector('#countrySelect').classList.remove('active')
 })
 
 
@@ -735,7 +623,7 @@ fetch("https://form.ehoss.com/get-data/rawdata")
   .then((response) => response.json())
   .then((data) => {
     RawData = data;
-    // console.log(data);
+    console.log(data);
 
     // Вызов функции для обработки данных
     processData(RawData);
@@ -744,21 +632,16 @@ fetch("https://form.ehoss.com/get-data/rawdata")
 
 function processData(data) {
   // Здесь вы можете выполнять нужные действия с данными
-  // console.log("Данные обработаны:", data);
+  console.log("Данные обработаны:", data);
   NewPoints = data;
-  // console.log(NewPoints);
+  console.log(NewPoints);
 }
 
 let heatmap;
 let heatmapInitialized = false;
 
 function showHeatMap(RawData) {
-  
-  if (heatmap) {
-     // Если карта скрыта, делаем ее видимой
-     heatmap.setMap(map);
-  }
-
+  console.log(RawData);
   if (!heatmapInitialized) {
     console.trace();
     console.log('func Start');
@@ -787,50 +670,10 @@ function showHeatMap(RawData) {
   }
 }
 
-function hideHeatMap() {
-  if (heatmap) {
-    heatmap.setMap(null);
-  }
-}
 
 
 
 document.querySelector('.heat').addEventListener('click', () => {
   showHeatMap(NewPoints);
-  document.querySelector('.pixel').click()
-  document.querySelector('#openCount').classList.remove('active')
-
+  hideMarkers()
 });
-
-
-
- // Получите все кнопки cat-item
- const catButtons = document.querySelectorAll('.cat-item');
-
- // Добавьте обработчик события для каждой кнопки
- catButtons.forEach(button => {
-     button.addEventListener('click', () => {
-         // Удалите класс "focus" у всех кнопок
-         catButtons.forEach(otherButton => {
-             otherButton.classList.remove('focus');
-         });
-
-         // Добавьте класс "focus" только к нажатой кнопке
-         button.classList.add('focus');
-     });
- });
-
-
- document.querySelector('#openCount').addEventListener('click', () => {
-  document.querySelector('#openCount').classList.add('active')
-  document.querySelector('#openCat .cat-drop').classList.remove('active')
-  document.querySelector('#openCat').classList.remove('active')
- })
-
-
-
-
-
-
-
-
