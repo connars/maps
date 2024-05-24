@@ -41,5 +41,11 @@
 }
 
 
+.zone_info {
+    padding: 10px 20px;
+}
 
-
+.zone_info p {
+    font-weight: 700;
+    font-size: 18px;
+}
