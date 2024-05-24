@@ -49,3 +49,17 @@
     font-weight: 700;
     font-size: 18px;
 }
+
+.zone_info_2 {
+    padding: 5px 10px;
+}
+
+.zone_info_2  p {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+
+.gm-style-iw button {
+    display: none !important;
+}

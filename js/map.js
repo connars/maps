@@ -612,6 +612,7 @@ function getPolygonCenter(coords) {
     return bounds.getCenter();
 }
 
+
 var center = getPolygonCenter(slovakiaCoords);
 
 // Создание окна информации
@@ -624,13 +625,63 @@ var infoWindow = new google.maps.InfoWindow({
     </div>`
 });
 
+infoWindow.setPosition(center);
+infoWindow.open(map);
+
 // Добавление обработчика события для полигона
 google.maps.event.addListener(slovakiaPolygon, 'click', function() {
     infoWindow.setPosition(center);
     infoWindow.open(map);
 });
 
+// Функция для генерации случайных точек внутри полигона
+function getRandomPointInPolygon(polygon) {
+  var bounds = new google.maps.LatLngBounds();
+  polygon.getPath().forEach(function (element, index) {
+      bounds.extend(element);
+  });
 
+  var minLat = bounds.getSouthWest().lat();
+  var maxLat = bounds.getNorthEast().lat();
+  var minLng = bounds.getSouthWest().lng();
+  var maxLng = bounds.getNorthEast().lng();
+
+  var point;
+  do {
+      var lat = minLat + (Math.random() * (maxLat - minLat));
+      var lng = minLng + (Math.random() * (maxLng - minLng));
+      point = new google.maps.LatLng(lat, lng);
+  } while (!google.maps.geometry.poly.containsLocation(point, polygon));
+
+  return point;
+}
+
+// Добавляем 10 случайных точек внутри полигона Словакии с инфо окнами
+for (var i = 0; i < 10; i++) {
+  var point = getRandomPointInPolygon(slovakiaPolygon);
+  var marker = new google.maps.Marker({
+      position: point,
+      map: map
+  });
+
+  var randomValue = Math.floor(Math.random() * 4000) + 1000;
+  var infoWindow2 = new google.maps.InfoWindow({
+      content:     
+      `<div class='zone_info zone_info_2'>
+        <p>
+          ${randomValue} т/год
+        </p>
+      </div>`
+  });
+
+  infoWindow2.open(map, marker);
+  // Открываем инфо окно при клике на маркер
+  google.maps.event.addListener(marker, 'click', (function(marker, infoWindow) {
+      return function() {
+          infoWindow.open(map, marker);
+      };
+  })(marker, infoWindow2));
+}
 
 
 
