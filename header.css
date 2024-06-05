@@ -43,6 +43,7 @@
 
 .zone_info {
     padding: 10px 20px;
+    padding-top: 0px !important;
 }
 
 .zone_info p {
@@ -51,8 +52,8 @@
 }
 
 .zone_info_2 {
-    padding: 5px 10px;
-}
+    /* padding: 5px 10px;  */
+} 
 
 .zone_info_2  p {
     font-weight: 700;
@@ -61,5 +62,14 @@
 
 
 .gm-style-iw button {
+    display: none !important;
+
+}
+
+.maptype.active > p{
+    font-weight: 900 !important;
+}
+
+.hidden-filters {
     display: none !important;
 }

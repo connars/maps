@@ -130,45 +130,8 @@
        
       }
 
-
-      .map-style {
-          position: absolute;
-          z-index: 2;
-          left: 100px; 
-          bottom: 40px;
-
-          display: flex;
-          gap: 10px;
-          align-items: center;
-          justify-content: center;
-          align-content: center;
-
-      }
-      .map-style-item img{
-        object-fit: cover;
-        width: 100%;
-        border-radius: 10px;
-        height: 100%;
-      }
-      .map-style-item {
-        background-color: white;
-        box-shadow: 0px 0px 10px black;
-        border-radius: 12px;
-        width: 40px;
-        height: 40px;
-        padding: 2px;
-        cursor: pointer;
-
-        transition: 0.3s;
-        /* padding: 10px; */
-      }
-
-      .map-style-item.active {
-        background-color: red;
-      }
-
-      .map-style-item:hover{
-        background-color: red;
+      .map-style-item.active p{
+        font-weight: 900;
       }
 
       .counte .rgb {
@@ -178,11 +141,9 @@
       }
 
 
-
-
       #all.all {
-        background-color: red;
-        color: white;
+        /* background-color: red; */
+        /* color: white; */
       }
 
    
@@ -412,14 +373,6 @@ input[type="radio"]:checked {
 
     }
 
-    /* .cat-item.active {
-      background-color: red;
-      color: white;
-    } */
-
-    /* .cat-item.active svg path{
-      stroke: white;
-    } */
 
     .cat-item-title {
       display: flex;
@@ -495,8 +448,8 @@ input[type="radio"]:checked {
       }
 
       .nav {
-        left: 0px !important;
-       padding-left: 15px;
+        /* left: 0px !important; */
+       /* padding-left: 15px; */
       }
 
       .map-style {
@@ -509,75 +462,6 @@ input[type="radio"]:checked {
       }
     }
 
-
-
-
-
-
-
-
-
-
-/* .menu-item-title {
-  background-color: white;
-  border-radius: 10px;
-  padding: 10px;
-
-  text-transform: uppercase;
-  font-size: 13px;
-}
-
-
-
-
-
-
-
-
-
-    .menu {
-      display: flex;
-  }
-  
-  .menu-item {
-      cursor: pointer;
-      margin-right: 20px;
-  }
-  
-  .menu-item.active {
-      font-weight: bold;
-  }
-  
-  .submenu {
-      display: none;
-  }
-  
-  .submenu-list {
-      position: absolute;
-      z-index: 10;
-
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      border-radius: 10px;
-      padding: 10px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.425);
-    background-color: white;
-      list-style: none;      
-      display: none;
-     
-  }
-  
-  .submenu-list li {
-      cursor: pointer;
-      margin-bottom: 5px;
-
-      font-size: 13px;
-  }
-  
-  .submenu-list li.active {
-      font-weight: bold;
-  } */
 
   .circle {
     border: 2px solid red;

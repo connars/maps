@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EHOSS MAP | CREATING THE AESTHETIC OF EQUINE LIFE</title>
+  <title>EHOSS MAP | ADVANCING BIOMASS TECHNOLOGIES</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -79,14 +79,65 @@
 
 <body>
 
+  <div id="types" class="absolute hidden p-5 z-10 bg-white right-[60px] rounded-xl bottom-[40px] ">
+    <h3 class="mb-2 text-xl font-semibold">
+      Map Types
+    </h3>
+    <div class="pb-5 border-b border-lgray grid gap-1 grid-cols-3">
+      <div id="all" class="maptype active all flex flex-col hover:bg-[#E9E9E9] p-2 rounded-l cursor-pointer items-center gap-2">
+        <img class="w-12 h-12 rounded-full" src="./images/icons/1.png" alt="Icon type 1">
+        <p class="text-[12px]">Default</p>
+      </div>
+      <div class="maptype heat flex flex-col hover:bg-[#E9E9E9] p-2 rounded-l cursor-pointer items-center gap-2">
+        <img class="w-12 h-12 rounded-full" src="./images/icons/2.png" alt="Icon type 1">
+        <p class="text-[12px]">Heat map</p>
+      </div>
+      <div class="maptype pm flex flex-col hover:bg-[#E9E9E9] p-2 rounded-l cursor-pointer items-center gap-2">
+        <img class="w-12 h-12 rounded-full" src="./images/icons/3.png" alt="Icon type 1">
+        <p class="text-[12px] text-center">Project map</p>
+      </div>
+    </div>
+    <h3 class="mt-4 mb-2 text-xl font-semibold">
+      Map Styles
+    </h3>
+    <div class="grid gap-1 grid-cols-3 pb-5 border-b border-lgray">
+      <div id="1" class="map-style-item active  flex flex-col hover:bg-[#E9E9E9] p-2 rounded-l cursor-pointer items-center gap-2">
+        <img class="w-12 h-12 rounded-full" src="./images/mapstyles/1.png" alt="Icon type 1">
+        <p class="text-[12px] text-center">Dark</p>
+      </div>
+      <div id="2" class="map-style-item flex flex-col hover:bg-[#E9E9E9] p-2 rounded-l cursor-pointer items-center gap-2">
+        <img class="w-12 h-12 rounded-full" src="./images/mapstyles/2.png" alt="Icon type 1">
+        <p class="text-[12px] text-center">Satellite</p>
+      </div>
 
-  <div id="filters" class="fixed md:block hidden z-[9999] cursor-pointer flex justify-center left-4 items-center top-0">
+      <div id="3" class="map-style-item flex flex-col hover:bg-[#E9E9E9] p-2 rounded-l cursor-pointer items-center gap-2">
+        <img class="w-12 h-12 rounded-full" src="./images/mapstyles/3.png" alt="Icon type 1">
+        <p class="text-[12px] text-center">Standard</p>
+      </div>
+
+      <div id="4" class="map-style-item  flex flex-col hover:bg-[#E9E9E9] p-2 rounded-l cursor-pointer items-center gap-2">
+        <img class="w-12 h-12 rounded-full" src="./images/mapstyles/4.png" alt="Icon type 1">
+        <p class="text-[12px] text-center">Light</p>
+      </div>
+
+      <div id="5" class="map-style-item flex opacity-50 pointer-events-none flex-col hover:bg-[#E9E9E9] p-2 rounded-l cursor-pointer items-center gap-2">
+        <img class="w-12 h-12 rounded-full" src="./images/mapstyles/5.png" alt="Icon type 1">
+        <p class="text-[12px] text-center">Winter</p>
+      </div>
+    </div>
+    <div class="mt-4 mb-2 font-semibold">
+      <input type="checkbox" id="toggle-labels">
+      Labels
+    </div>
+  </div>
+
+  <div id="filters" class="fixed z-[9999] cursor-pointer flex justify-center left-4 items-center top-0">
     <div class="">
       <div class="nav mt-4">
         <div class="cat">
-          <div class="cat-item all" id="all" style="padding: 5px 15px !important;">
+          <!-- <div class="cat-item all" id="all" style="padding: 5px 15px !important;">
             <p>All</p>
-          </div>
+          </div> -->
           <div class="cat-item" id="openCat" style="padding: 5px 15px !important;">
 
             <div class="countyNameCat">
@@ -140,19 +191,19 @@
               </form>
             </div>
           </div>
-          <div class="cat-item heat" style="padding: 5px 15px !important;">
+          <!-- <div class="cat-item heat" style="padding: 5px 15px !important;">
             <div class="counte">
               Heat map
               <div class="rgb">
 
               </div>
             </div>
-          </div>
-          <div class="cat-item" style="padding: 5px 15px !important;">
+          </div> -->
+          <!-- <div class="cat-item" style="padding: 5px 15px !important;">
             <div class="counte">
               PM
             </div>
-          </div>
+          </div> -->
           
         </div>
       </div>
@@ -293,20 +344,16 @@
 
   <div class="map-settings flex flex-col justify-center items-center gap-2">
     
-    <div id="" class="filters-open bg-white cursor-pointer md:hidden block w-[40px] rounded-full h-[40px] flex justify-center items-center">
+    <div id="" class="filters-open bg-white cursor-pointer hidden w-[40px] rounded-full h-[40px] flex justify-center items-center">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
       </svg>      
     </div>
     
-    <div id="1" class="map-style-item active">
-      <img src="./1.jpg" alt="">
+    
+    <div id="layers" class="bg-white p-2 rounded-xl cursor-pointer hover:bg-[#E9E9E9]">
+      <img class="w-6 h-6" src="icons/layer-icon.svg" alt="">
     </div>
-    <div id="2" class="map-style-item">
-      <img src="./2.jpg" alt="">
-    </div>
-
-
 
     <div class="zoom__wrapper">
       <div id="plus" class="zoom-item">
@@ -378,9 +425,9 @@
                       <li>
                         <a
                           class="hover:text-red md:text-[14px] text-[12px] flex justify-between items-center"
-                          href="https://ehoss.com/manure-management-technology"
+                          href="https://ehoss.com/reusing-platform"
                         >
-                          Manure Management Technology
+                          Reusing Platform
                           <div class='flex gap-2'>
                             <svg class="h-4 w-4" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path d="M6.87479 2.04851C6.87479 2.04851 7.65547 2.71517 7.82387 3.57822C8.05038 4.73777 8.77688 5.72678 9.33366 6.34176C9.6992 6.74485 9.70116 7.37986 9.34019 7.78813L8.93288 8.24872C8.67048 8.54523 8.17309 8.74032 7.57257 8.20737C7.57257 8.20737 6.06409 7.93541 5.50142 7.87081C4.81082 7.79136 4.41069 7.88761 4.03341 7.28878C3.83497 6.98775 3.67505 6.25132 3.80691 5.92509C3.65612 6.11825 3.51709 6.62535 3.74685 7.37469C2.62022 7.91022 1.03994 9.4115 1.03994 9.4115L0.203125 1.21002C0.203125 1.21002 3.69333 2.24748 4.26578 2.03172C4.26578 2.03172 4.17505 1.898 4.13981 1.69645C4.03014 1.07242 4.61892 0.994904 4.8415 0.816611C5.09085 0.594391 5.38001 0.445814 5.39829 0.00524902C5.95181 0.51881 5.5086 1.18935 5.5086 1.18935L6.30625 1.40511C6.30625 1.40511 6.91591 1.62733 7.13589 0.778498C7.62805 1.78624 6.87283 2.04916 6.87283 2.04916L6.87479 2.04851Z" fill="white"/>
